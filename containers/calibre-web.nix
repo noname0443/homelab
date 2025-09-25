@@ -13,6 +13,10 @@ in
   containers.calibre-web = {
     autoStart = true;
 
+    privateNetwork = true;
+    hostAddress = "192.168.101.39";
+    localAddress = "192.168.101.40";
+
     bindMounts = {
       "/var/lib/calibre-web"  = { hostPath = "${cfgRoot}/config"; isReadOnly = false; };
       "/var/cache/calibre-web" = { hostPath = "${cfgRoot}/cache"; isReadOnly = false; };

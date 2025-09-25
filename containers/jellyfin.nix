@@ -17,6 +17,14 @@ in
   containers.jellyfin = {
     autoStart = true;
 
+    privateNetwork = true;
+    hostAddress = "192.168.101.29";
+    localAddress = "192.168.101.30";
+    #forwardPorts = [
+    #  { containerPort = 8096; hostPort = 8096; protocol = "tcp"; }
+    #];
+
+
     allowedDevices = [
       { node = "/dev/dri"; modifier = "rwm"; }
     ];

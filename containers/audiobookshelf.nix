@@ -15,6 +15,10 @@ in
   containers.audiobookshelf = {
     autoStart = true;
 
+    privateNetwork = true;
+    hostAddress = "192.168.101.49";
+    localAddress = "192.168.101.50";
+
     bindMounts = {
       "/var/lib/audiobookshelf" = {
         hostPath = "${cfgRoot}";

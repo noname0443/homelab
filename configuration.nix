@@ -3,6 +3,7 @@
   imports =
     [
       ./hardware-configuration.nix
+      ./vpn.nix
       ./containers
     ];
 
@@ -10,7 +11,6 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = "bmax01";
-  networking.wireless.enable = true;
 
   i18n.defaultLocale = "en_US.UTF-8";
 

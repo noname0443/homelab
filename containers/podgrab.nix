@@ -11,6 +11,10 @@ in
   containers.podgrab = {
     autoStart = true;
 
+    privateNetwork = true;
+    hostAddress = "192.168.101.59";
+    localAddress = "192.168.101.60";
+
     bindMounts = {
       "/podcasts" = {
         hostPath = "/srv/media/podcasts";
@@ -30,7 +34,7 @@ in
       environment.systemPackages = [ ];
       environment.variables = {
         PORT = "8078";
-        PASSWORD = "podgrabber";
+        PASSWORD = "podgrabber"; # TODO: as MVP it is okay, but I have to change it later
       };
     };
   };
