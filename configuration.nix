@@ -1,4 +1,7 @@
 { config, lib, pkgs, ... }:
+let
+  secret = import ./secret/secret.nix;
+in
 {
   imports =
     [
@@ -17,9 +20,9 @@
   services.xserver.xkb.layout = "us";
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  users.users.eeivanow = {
+  users.users."${secret.system.user}" = {
     isNormalUser = true;
-    extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" ];
     packages = with pkgs; [
       tree
     ];
@@ -39,8 +42,8 @@
 
   services.openssh.enable = true;
 
-  networking.firewall.allowedTCPPorts = [ 22 ];
+  networking.firewall.allowedTCPPorts = [ 22 80 443 ];
   # networking.firewall.allowedUDPPorts = [ ... ];
 
-  system.stateVersion = "25.05"; # Did you read the comment?
+  system.stateVersion = "25.05";
 }

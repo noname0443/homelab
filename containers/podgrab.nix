@@ -2,6 +2,7 @@
 
 let
   cfgRoot = "/srv/media/podcasts";
+  secret = import ../secret/secret.nix;
 in
 {
   systemd.tmpfiles.rules = [
@@ -12,8 +13,8 @@ in
     autoStart = true;
 
     privateNetwork = true;
-    hostAddress = "192.168.101.59";
-    localAddress = "192.168.101.60";
+    localAddress = "${secret.containers.podgrab.ip}";
+    hostAddress = "${secret.containers.podgrab.bind_ip}";
 
     bindMounts = {
       "/podcasts" = {
@@ -25,19 +26,23 @@ in
     config = { pkgs, ... }: {
       system.stateVersion = "25.05";
 
+      environment.etc."podgrab.password" = {
+        text  = "PASSWORD=${secret.containers.podgrab.password}\n";
+        mode  = "0600";
+        user  = "podgrab";
+        group = "podgrab";
+      };
+
       services.podgrab = {
         enable = true;
-        port = 8078;
+        port = secret.containers.podgrab.port;
+        passwordFile = "/etc/podgrab.password";
         dataDirectory = "/podcasts";
       };
 
-      environment.systemPackages = [ ];
-      environment.variables = {
-        PORT = "8078";
-        PASSWORD = "podgrabber"; # TODO: as MVP it is okay, but I have to change it later
-      };
+      networking.firewall.allowedTCPPorts = [ secret.containers.podgrab.port ];
     };
   };
 
-  networking.firewall.allowedTCPPorts = [ 8078 ];
+  networking.firewall.allowedTCPPorts = [ secret.containers.podgrab.port ];
 }

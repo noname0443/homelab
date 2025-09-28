@@ -1,6 +1,7 @@
 { config, pkgs, lib, ... }:
 
 let
+  secret = import ../secret/secret.nix;
   cfgRoot = "/srv/jellyfin";
 in
 {
@@ -18,12 +19,8 @@ in
     autoStart = true;
 
     privateNetwork = true;
-    hostAddress = "192.168.101.29";
-    localAddress = "192.168.101.30";
-    #forwardPorts = [
-    #  { containerPort = 8096; hostPort = 8096; protocol = "tcp"; }
-    #];
-
+    localAddress = "${secret.containers.jellyfin.ip}";
+    hostAddress = "${secret.containers.jellyfin.bind_ip}";
 
     allowedDevices = [
       { node = "/dev/dri"; modifier = "rwm"; }
@@ -59,8 +56,6 @@ in
       services.jellyfin.user = "jellyfin";
       services.jellyfin.group = "jellyfin";
 
-      services.openssh.enable = false;
-      documentation.nixos.enable = false;
       system.stateVersion = "25.05";
     };
   };

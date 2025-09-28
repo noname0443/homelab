@@ -2,6 +2,7 @@
 
 let
   cfgRoot = "/srv/audiobookshelf";
+  secret = import ../secret/secret.nix;
 in
 {
   systemd.tmpfiles.rules = [
@@ -16,8 +17,8 @@ in
     autoStart = true;
 
     privateNetwork = true;
-    hostAddress = "192.168.101.49";
-    localAddress = "192.168.101.50";
+    localAddress = "${secret.containers.audiobookshelf.ip}";
+    hostAddress = "${secret.containers.audiobookshelf.bind_ip}";
 
     bindMounts = {
       "/var/lib/audiobookshelf" = {
@@ -45,10 +46,10 @@ in
       services.audiobookshelf = {
         enable = true;
         host = "0.0.0.0";
-        port = 13378;
+        port = secret.containers.audiobookshelf.port;
       };
     };
   };
 
-  networking.firewall.allowedTCPPorts = [ 13378 ];
+  networking.firewall.allowedTCPPorts = [ secret.containers.audiobookshelf.port ];
 }

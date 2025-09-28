@@ -3,6 +3,7 @@
 let
   webdavRoot = "/srv/webdav";
   authFile = "/srv/webdav-htpasswd";
+  secret = import ../secret/secret.nix;
 in
 {
   systemd.tmpfiles.rules = [
@@ -12,13 +13,9 @@ in
   containers.webdav = {
     autoStart = true;
 
-    #privateNetwork = true;
-    #hostAddress = "192.168.101.19";
-    #localAddress = "192.168.101.20";
-
-    #forwardPorts = [
-    #  { containerPort = 4918; hostPort = 4918; protocol = "tcp"; }
-    #];
+    privateNetwork = true;
+    localAddress = "${secret.containers.webdav.ip}";
+    hostAddress = "${secret.containers.webdav.bind_ip}";
 
     bindMounts = {
       "/media/webdav" = {hostPath = "${webdavRoot}";isReadOnly = false;};
@@ -27,20 +24,20 @@ in
 
     config = { pkgs, ... }: {
       system.stateVersion = "25.05";
-      networking.firewall.allowedTCPPorts = [ 4918 ];
+      networking.firewall.allowedTCPPorts = [ secret.containers.webdav.port ];
 
       services.webdav = {
         enable = true;
         package = pkgs.webdav;
         settings = {
           address = "0.0.0.0";
-          port = 4918;
+          port = secret.containers.webdav.port;
           directory = "/media/webdav";
-          users = [ { username = "user"; password = "user"; } ]; # TODO: change
+          users = secret.containers.webdav.users;
         };
       };
     };
   };
 
-  networking.firewall.allowedTCPPorts = [ 4918 ];
+  networking.firewall.allowedTCPPorts = [ secret.containers.webdav.port ];
 }

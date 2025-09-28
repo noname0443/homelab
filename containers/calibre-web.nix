@@ -2,6 +2,7 @@
 let
   cfgRoot  = "/srv/calibre-web";
   booksDir = "/srv/books";
+  secret = import ../secret/secret.nix;
 in
 {
   systemd.tmpfiles.rules = [
@@ -14,8 +15,8 @@ in
     autoStart = true;
 
     privateNetwork = true;
-    hostAddress = "192.168.101.39";
-    localAddress = "192.168.101.40";
+    localAddress = "${secret.containers.calibre-web.ip}";
+    hostAddress = "${secret.containers.calibre-web.bind_ip}";
 
     bindMounts = {
       "/var/lib/calibre-web"  = { hostPath = "${cfgRoot}/config"; isReadOnly = false; };
@@ -30,7 +31,7 @@ in
       services.calibre-web.enable = true;
       services.calibre-web.listen = {
         ip = "0.0.0.0";
-        port = 8083;
+        port = secret.containers.calibre-web.port;
       };
       services.calibre-web.openFirewall = true;
 
@@ -61,5 +62,5 @@ in
     };
   };
 
-  networking.firewall.allowedTCPPorts = [ 8083 ];
+  networking.firewall.allowedTCPPorts = [ secret.containers.calibre-web.port ];
 }
