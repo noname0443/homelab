@@ -6,17 +6,19 @@ let
 in
 {
   systemd.tmpfiles.rules = [
-    "d ${cfgRoot}/config 0755 root root -"
-    "d ${cfgRoot}/cache  0755 root root -"
-    "d /srv/media/movies  0755 root root -"
-    "d /srv/media/series  0755 root root -"
-    "d /srv/media/study  0755 root root -"
-    "d /srv/media/podcasts  0755 root root -"
-    "d /srv/media/music  0755 root root -"
+    "d ${cfgRoot}/config 0777 root root -"
+    "d ${cfgRoot}/cache  0777 root root -"
+    "d /srv/media/movies  0777 root root -"
+    "d /srv/media/series  0777 root root -"
+    "d /srv/media/study  0777 root root -"
+    "d /srv/media/podcasts  0777 root root -"
+    "d /srv/media/music  0777 root root -"
   ];
 
   containers.jellyfin = {
     autoStart = true;
+    extraFlags = [ "-U" ];
+    enableTun = true;
 
     privateNetwork = true;
     localAddress = "${secret.containers.jellyfin.ip}";
@@ -50,11 +52,6 @@ in
 
       hardware.opengl.enable = true;
       environment.systemPackages = [ pkgs.pciutils ];
-
-      users.users.jellyfin.extraGroups = [ "video" "render" ];
-
-      services.jellyfin.user = "jellyfin";
-      services.jellyfin.group = "jellyfin";
 
       system.stateVersion = "25.05";
     };

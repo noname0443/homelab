@@ -6,35 +6,37 @@ let
 in
 {
   systemd.tmpfiles.rules = [
-    "d ${cfgRoot} 0755 root root -"
+    "d ${cfgRoot}/config 0777 root root -"
+    "d ${cfgRoot}/metadata 0777 root root -"
 
-    "d /srv/books            0777 root root -"
-    "d /srv/media/podcasts   0755 root root -"
-    "d /srv/media/music      0755 root root -"
+    "d /srv/media/podcasts   0777 root root -"
+    "d /srv/media/audiobooks   0777 root root -"
   ];
 
   containers.audiobookshelf = {
     autoStart = true;
+    extraFlags = [ "-U" ];
+    enableTun = true;
 
     privateNetwork = true;
     localAddress = "${secret.containers.audiobookshelf.ip}";
     hostAddress = "${secret.containers.audiobookshelf.bind_ip}";
 
     bindMounts = {
-      "/var/lib/audiobookshelf" = {
-        hostPath = "${cfgRoot}";
+      "/config" = {
+        hostPath = "${cfgRoot}/config";
         isReadOnly = false;
       };
-      "/media/books" = {
-        hostPath = "/srv/books";
+      "/metadata" = {
+        hostPath = "${cfgRoot}/metadata";
         isReadOnly = false;
       };
-      "/media/podcasts" = {
+      "/podcasts" = {
         hostPath = "/srv/media/podcasts";
         isReadOnly = false;
       };
-      "/media/music" = {
-        hostPath = "/srv/media/music";
+      "/audiobooks" = {
+        hostPath = "/srv/media/audiobooks";
         isReadOnly = false;
       };
     };

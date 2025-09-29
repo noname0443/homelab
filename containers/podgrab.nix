@@ -6,11 +6,13 @@ let
 in
 {
   systemd.tmpfiles.rules = [
-    "d ${cfgRoot} 0755 root root -"
+    "d ${cfgRoot} 0777 root root -"
   ];
 
   containers.podgrab = {
     autoStart = true;
+    extraFlags = [ "-U" ];
+    enableTun = true;
 
     privateNetwork = true;
     localAddress = "${secret.containers.podgrab.ip}";

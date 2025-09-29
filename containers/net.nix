@@ -2,8 +2,7 @@
 {
   networking.nat = {
     enable = true;
-    externalInterface = "eth0";
-    internalInterfaces = [ "br-containers" ];
+    internalInterfaces = [ "ve-*" ];
     internalIPs = [ "192.168.101.1/24" ];
   };
 }

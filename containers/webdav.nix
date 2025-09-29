@@ -7,11 +7,14 @@ let
 in
 {
   systemd.tmpfiles.rules = [
-    "d ${webdavRoot} 0775 root root -"
+    "d ${webdavRoot} 0777 root root -"
   ];
 
   containers.webdav = {
     autoStart = true;
+
+    extraFlags = [ "-U" ];
+    enableTun = true;
 
     privateNetwork = true;
     localAddress = "${secret.containers.webdav.ip}";
