@@ -57,20 +57,19 @@ in
           User = "calibre-web";
           Group = "calibre-web";
           TimeoutStartSec = "30s";
+          Restart = "on-failure";
+          RestartSec = "5s";
         };
         path = [ pkgs.wget ];
         script = ''
           set -euo pipefail
-
-          echo "[init] resolv.conf:"
-          cat /etc/resolv.conf || true
 
           if [ ! -f /books/metadata.db ]; then
             echo "[init] downloading metadata.db…"
             wget -v --retry-connrefused --waitretry=3 --tries=5 \
               https://github.com/janeczku/calibre-web/raw/master/library/metadata.db \
               -O /tmp/metadata.db
-            cp /tmp/metadata.db /books/metadata.db
+            mv /tmp/metadata.db /books/metadata.db
             chmod 666 /books/metadata.db
             echo "[init] done."
           else

@@ -1,4 +1,7 @@
 { config, pkgs, ... }:
+let
+  secret = import ../secret/secret.nix;
+in
 {
   networking.nat = {
     enable = true;

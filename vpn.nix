@@ -6,6 +6,8 @@ let
   podgrabPort = toString secret.containers.podgrab.port;
   calibrewebPort = toString secret.containers.calibre-web.port;
   jellyfinPort = toString secret.containers.jellyfin.port;
+  navidromePort = toString secret.containers.navidrome.port;
+  immichPort = toString secret.containers.immich.port;
 in
 {
   systemd.services.homelab-ssh-tunnel = {
@@ -28,6 +30,8 @@ in
           -R 0.0.0.0:${podgrabPort}:127.0.0.1:${podgrabPort} \
           -R 0.0.0.0:${calibrewebPort}:127.0.0.1:${calibrewebPort} \
           -R 0.0.0.0:${jellyfinPort}:127.0.0.1:${jellyfinPort} \
+          -R 0.0.0.0:${navidromePort}:127.0.0.1:${navidromePort} \
+          -R 0.0.0.0:${immichPort}:127.0.0.1:${immichPort} \
           ${secret.vps.user}@${secret.vps.ip}
       '';
 
@@ -74,6 +78,18 @@ in
       "${secret.domain}:${webdavPort}" = {
         extraConfig = ''
           reverse_proxy ${secret.containers.webdav.ip}:${webdavPort}
+        '';
+      };
+
+      "${secret.domain}:${navidromePort}" = {
+        extraConfig = ''
+          reverse_proxy ${secret.containers.navidrome.ip}:${navidromePort}
+        '';
+      };
+
+      "${secret.domain}:${immichPort}" = {
+        extraConfig = ''
+          reverse_proxy ${secret.containers.immich.ip}:${immichPort}
         '';
       };
     };

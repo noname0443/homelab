@@ -2,7 +2,6 @@
 
 let
   webdavRoot = "/srv/webdav";
-  authFile = "/srv/webdav-htpasswd";
   secret = import ../secret/secret.nix;
 in
 {
@@ -22,7 +21,6 @@ in
 
     bindMounts = {
       "/media/webdav" = {hostPath = "${webdavRoot}";isReadOnly = false;};
-      "/etc/webdav-htpasswd" = {hostPath = "${authFile}";isReadOnly = false;};
     };
 
     config = { pkgs, ... }: {

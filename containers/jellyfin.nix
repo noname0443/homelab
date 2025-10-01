@@ -29,8 +29,8 @@ in
     ];
 
     bindMounts = {
-      "/var/lib/jellyfin" = { hostPath = "${cfgRoot}/config"; isReadOnly = false; };
-      "/var/cache/jellyfin" = { hostPath = "${cfgRoot}/cache"; isReadOnly = false; };
+      "/config" = { hostPath = "${cfgRoot}/config"; isReadOnly = false; };
+      "/cache" = { hostPath = "${cfgRoot}/cache"; isReadOnly = false; };
 
       "/media/movies" = { hostPath = "/srv/media/movies"; isReadOnly = true; };
       "/media/series" = { hostPath = "/srv/media/series"; isReadOnly = true; };

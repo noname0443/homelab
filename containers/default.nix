@@ -6,5 +6,7 @@
     ./podgrab.nix
     ./audiobookshelf.nix
     ./webdav.nix
+    ./navidrome.nix
+    ./immich.nix
   ];
 }
