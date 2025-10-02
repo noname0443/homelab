@@ -44,12 +44,13 @@ in
     config = { pkgs, ... }: {
       system.stateVersion = "25.05";
 
-      networking.firewall.enable = false;
       services.audiobookshelf = {
         enable = true;
         host = "0.0.0.0";
         port = secret.containers.audiobookshelf.port;
       };
+
+      networking.firewall.enable = false;
     };
   };
 

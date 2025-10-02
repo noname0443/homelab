@@ -26,7 +26,7 @@ in
 
     config = { pkgs, ... }: {
       system.stateVersion = "25.05";
-      networking.firewall.allowedTCPPorts = [ secret.containers.navidrome.port ];
+      networking.firewall.enable = false;
 
       services.navidrome = {
         enable = true;

@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  webdavRoot = "/srv/webdav";
+  webdavRoot = "/srv/media";
   secret = import ../secret/secret.nix;
 in
 {
@@ -20,7 +20,7 @@ in
     hostAddress = "${secret.containers.webdav.bind_ip}";
 
     bindMounts = {
-      "/media/webdav" = {hostPath = "${webdavRoot}";isReadOnly = false;};
+      "/media" = {hostPath = "${webdavRoot}";isReadOnly = false;};
     };
 
     config = { pkgs, ... }: {
@@ -33,7 +33,7 @@ in
         settings = {
           address = "0.0.0.0";
           port = secret.containers.webdav.port;
-          directory = "/media/webdav";
+          directory = "/media";
           users = secret.containers.webdav.users;
         };
       };

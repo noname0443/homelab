@@ -42,7 +42,8 @@ in
         dataDirectory = "/podcasts";
       };
 
-      networking.firewall.allowedTCPPorts = [ secret.containers.podgrab.port ];
+      networking.firewall.enable = false;
+      #networking.firewall.allowedTCPPorts = [ secret.containers.podgrab.port ];
     };
   };
 
