@@ -6,7 +6,7 @@ in
   imports =
     [
       ./hardware-configuration.nix
-      ./vpn.nix
+      ./web
       ./containers
     ];
 
@@ -42,7 +42,7 @@ in
 
   services.openssh.enable = true;
 
-  networking.firewall.allowedTCPPorts = [ 22 80 443 ];
+  networking.firewall.allowedTCPPorts = [ 22 80 443 8000 ];
   # networking.firewall.allowedUDPPorts = [ ... ];
 
   system.stateVersion = "25.05";

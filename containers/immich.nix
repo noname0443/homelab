@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ lib, config, pkgs, ... }:
 let
   secret = import ../secret/secret.nix;
 in
@@ -32,6 +32,14 @@ in
     bindMounts = {
       "/photos" = { hostPath = "/srv/media/photos"; isReadOnly = false; };
     };
+
+    forwardPorts = lib.mkIf (secret.containers.immich.forward) [
+      {
+        containerPort = secret.containers.immich.port;
+        hostPort      = secret.containers.immich.port;
+        protocol      = "tcp";
+      }
+    ];
 
     config = { pkgs, ... }: {
       system.stateVersion = "25.05";

@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ lib, config, pkgs, ... }:
 
 let
   cfgRoot = "/srv/media/podcasts";
@@ -24,6 +24,14 @@ in
         isReadOnly = false;
       };
     };
+
+    forwardPorts = lib.mkIf (secret.containers.podgrab.forward) [
+      {
+        containerPort = secret.containers.podgrab.port;
+        hostPort      = secret.containers.podgrab.port;
+        protocol      = "tcp";
+      }
+    ];
 
     config = { pkgs, ... }: {
       system.stateVersion = "25.05";

@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ lib, config, pkgs, ... }:
 let
   navidromeRoot = "/srv/navidrome";
   secret = import ../secret/secret.nix;
@@ -23,6 +23,14 @@ in
       "/music" = { hostPath = "/srv/media/music"; isReadOnly = true; };
       "/data" = { hostPath = "${navidromeRoot}"; isReadOnly = true; };
     };
+
+    forwardPorts = lib.mkIf (secret.containers.navidrome.forward) [
+      {
+        containerPort = secret.containers.navidrome.port;
+        hostPort      = secret.containers.navidrome.port;
+        protocol      = "tcp";
+      }
+    ];
 
     config = { pkgs, ... }: {
       system.stateVersion = "25.05";

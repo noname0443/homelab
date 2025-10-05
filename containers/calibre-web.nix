@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ lib, config, pkgs, ... }:
 let
   cfgRoot  = "/srv/calibre-web";
   booksDir = "/srv/books";
@@ -26,6 +26,14 @@ in
       "/config"  = { hostPath = "${cfgRoot}"; isReadOnly = false; };
       "/books"   = { hostPath = booksDir; isReadOnly = false; };
     };
+
+    forwardPorts = lib.mkIf (secret.containers.calibre-web.forward) [
+      {
+        containerPort = secret.containers.calibre-web.port;
+        hostPort      = secret.containers.calibre-web.port;
+        protocol      = "tcp";
+      }
+    ];
 
     config = { config, pkgs, ... }: {
       networking.hostName = "calibre-web";

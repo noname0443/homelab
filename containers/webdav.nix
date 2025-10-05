@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ lib, config, pkgs, ... }:
 
 let
   webdavRoot = "/srv/media";
@@ -22,6 +22,14 @@ in
     bindMounts = {
       "/media" = {hostPath = "${webdavRoot}";isReadOnly = false;};
     };
+
+    forwardPorts = lib.mkIf (secret.containers.webdav.forward) [
+      {
+        containerPort = secret.containers.webdav.port;
+        hostPort      = secret.containers.webdav.port;
+        protocol      = "tcp";
+      }
+    ];
 
     config = { pkgs, ... }: {
       system.stateVersion = "25.05";

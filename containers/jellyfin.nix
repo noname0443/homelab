@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ lib, config, pkgs, ... }:
 
 let
   secret = import ../secret/secret.nix;
@@ -40,6 +40,14 @@ in
 
       "/dev/dri" = { hostPath = "/dev/dri"; isReadOnly = true; };
     };
+
+    forwardPorts = lib.mkIf (secret.containers.jellyfin.forward) [
+      {
+        containerPort = secret.containers.jellyfin.port;
+        hostPort      = secret.containers.jellyfin.port;
+        protocol      = "tcp";
+      }
+    ];
 
     config = { config, pkgs, ... }: {
       networking.hostName = "jellyfin";

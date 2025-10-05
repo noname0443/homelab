@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ lib, config, pkgs, ... }:
 
 let
   cfgRoot = "/srv/audiobookshelf";
@@ -40,6 +40,14 @@ in
         isReadOnly = false;
       };
     };
+
+    forwardPorts = lib.mkIf (secret.containers.audiobookshelf.forward) [
+      {
+        containerPort = secret.containers.audiobookshelf.port;
+        hostPort      = secret.containers.audiobookshelf.port;
+        protocol      = "tcp";
+      }
+    ];
 
     config = { pkgs, ... }: {
       system.stateVersion = "25.05";

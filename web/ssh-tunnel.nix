@@ -1,6 +1,6 @@
 { config, pkgs, ... }:
 let
-  secret = import ./secret/secret.nix;
+  secret = import ../secret/secret.nix;
   webdavPort = toString secret.containers.webdav.port;
   audiobookshelfPort = toString secret.containers.audiobookshelf.port;
   podgrabPort = toString secret.containers.podgrab.port;
@@ -22,8 +22,9 @@ in
           -o "ServerAliveInterval=60" \
           -o "ServerAliveCountMax=3" \
           -o "ExitOnForwardFailure=yes" \
-          -i ${secret.vps.sshkey_path} \
+          -i ${secret.ssh-tunnel.sshkey_path} \
           -R 0.0.0.0:4443:127.0.0.1:443 \
+          -R 0.0.0.0:8443:127.0.0.1:8443 \
           -R 0.0.0.0:8000:127.0.0.1:80 \
           -R 0.0.0.0:${webdavPort}:127.0.0.1:${webdavPort} \
           -R 0.0.0.0:${audiobookshelfPort}:127.0.0.1:${audiobookshelfPort} \
@@ -32,7 +33,7 @@ in
           -R 0.0.0.0:${jellyfinPort}:127.0.0.1:${jellyfinPort} \
           -R 0.0.0.0:${navidromePort}:127.0.0.1:${navidromePort} \
           -R 0.0.0.0:${immichPort}:127.0.0.1:${immichPort} \
-          ${secret.vps.user}@${secret.vps.ip}
+          ${secret.ssh-tunnel.user}@${secret.ssh-tunnel.ip}
       '';
 
       Restart = "always";
@@ -43,51 +44,51 @@ in
   services.caddy = {
     enable = true;
     package = pkgs.caddy;
-    email = "${secret.email}";
+    email = "${secret.ssh-tunnel.email}";
     virtualHosts = {
-      "${secret.domain}" = {
+      "${secret.ssh-tunnel.domain}" = {
         extraConfig = ''
           respond "Hello world!" 200
         '';
       };
 
-      "${secret.domain}:${jellyfinPort}" = {
+      "${secret.ssh-tunnel.domain}:${jellyfinPort}" = {
         extraConfig = ''
           reverse_proxy ${secret.containers.jellyfin.ip}:${jellyfinPort}
         '';
       };
 
-      "${secret.domain}:${calibrewebPort}" = {
+      "${secret.ssh-tunnel.domain}:${calibrewebPort}" = {
         extraConfig = ''
           reverse_proxy ${secret.containers.calibre-web.ip}:${calibrewebPort}
         '';
       };
 
-      "${secret.domain}:${audiobookshelfPort}" = {
+      "${secret.ssh-tunnel.domain}:${audiobookshelfPort}" = {
         extraConfig = ''
           reverse_proxy ${secret.containers.audiobookshelf.ip}:${audiobookshelfPort}
         '';
       };
 
-      "${secret.domain}:${podgrabPort}" = {
+      "${secret.ssh-tunnel.domain}:${podgrabPort}" = {
         extraConfig = ''
           reverse_proxy ${secret.containers.podgrab.ip}:${podgrabPort}
         '';
       };
 
-      "${secret.domain}:${webdavPort}" = {
+      "${secret.ssh-tunnel.domain}:${webdavPort}" = {
         extraConfig = ''
           reverse_proxy ${secret.containers.webdav.ip}:${webdavPort}
         '';
       };
 
-      "${secret.domain}:${navidromePort}" = {
+      "${secret.ssh-tunnel.domain}:${navidromePort}" = {
         extraConfig = ''
           reverse_proxy ${secret.containers.navidrome.ip}:${navidromePort}
         '';
       };
 
-      "${secret.domain}:${immichPort}" = {
+      "${secret.ssh-tunnel.domain}:${immichPort}" = {
         extraConfig = ''
           reverse_proxy ${secret.containers.immich.ip}:${immichPort}
         '';
